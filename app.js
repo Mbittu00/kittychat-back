@@ -1,4 +1,6 @@
-const app = require('express')();
+const express=require('express')
+const app=express()
+const bodyParser=require('body-parser')
 const http = require('http').Server(app);
 const io=require('socket.io')(http,
 {cors: {
@@ -12,7 +14,7 @@ let user=[]
 let msg=[]
 
 //function
-
+app.use(bodyParser.urlencoded({limit:'5mb'}))
 
 
 
@@ -32,10 +34,14 @@ io.emit('show',msg)
 //send msg
 socket.on('msg',(res)=>{
 msg.push(res)
-//console.log(msg)
+console.log(msg)
 io.emit('show',msg)
 })
- 
+ socket.on('file',(res)=>{
+msg.push(res)
+console.log(msg)
+io.emit('show',msg)
+ })
  
  
  socket.on('disconnect', ()=>{
