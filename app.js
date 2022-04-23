@@ -23,24 +23,19 @@ io.emit('online',true)
 //join
 socket.on('join',(res)=>{
   let data={username:res,text:`${res} jast join`}
- msg.push(data) 
- io.emit('show',msg)
+ io.emit('show',data)
  // console.log(user)
 })
 
 //show msg
-io.emit('show',msg)
+//io.emit('show',msg)
 
 //send msg
 socket.on('msg',(res)=>{
-msg.push(res)
-console.log(msg)
-io.emit('show',msg)
+io.emit('show',res)
 })
  socket.on('file',(res)=>{
-msg.push(res)
-console.log(msg)
-io.emit('show',msg)
+io.emit('show',res)
  })
  
  
