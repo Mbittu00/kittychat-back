@@ -1,6 +1,5 @@
 const express=require('express')
 const app=express()
-const bodyParser=require('body-parser')
 const http = require('http').Server(app);
 const io=require('socket.io')(http,
 {cors: {
@@ -14,7 +13,6 @@ let user=[]
 let msg=[]
 
 //function
-app.use(bodyParser.urlencoded({limit:'5mb'}))
 
 
 
