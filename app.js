@@ -20,6 +20,8 @@ app.use(bodyParser.urlencoded({limit:'5mb'}))
 
 io.on('connection',(socket)=>{
 
+io.emit('online',true)
+
 //join
 socket.on('join',(res)=>{
   let data={username:res,text:`${res} jast join`}
