@@ -8,7 +8,7 @@ const io=require('socket.io')(http,
     methods: ["GET", "POST"]
   }})
 app.get('/', function(req, res) {
-   res.send('hello')
+   res.send('hello world')
 });
 let user=[]
 let msg=[]
