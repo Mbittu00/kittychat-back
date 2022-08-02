@@ -1,51 +1,53 @@
-const express=require('express')
-const app=express()
-const http = require('http').Server(app);
-const io=require('socket.io')(http,
-{cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }})
-app.get('/', function(req, res) {
-   res.send('hello world')
+const io = require("socket.io")(8900, {
+  cors: {
+    origin: "http://10.146.12.71:3000",
+  },
 });
+
 let user=[]
-let msg=[]
-
 //function
+let addUser=(uid,sid)=>{
+  if (user.some((n)=>n.uid==uid)) {
+    user=user.filter((n)=>n.uid!=uid)
+    user.push({uid,sid})
+    console.log('change',user)
+  }else{
+  user.push({uid,sid})
+  console.log('set',user)
+  }
+}
+let removeUser=(sid)=>{
+  user=user.filter((n)=>n.sid!=sid)
+  console.log('disconnect',user)
+}
+//socket
+io.on("connection", (socket) => {
+  io.emit("online", true);
 
+  //join
+  socket.on("join", (res) => {
+    let data = { username: res, text: `${res} jast join` };
+    io.emit("show", data);
+    addUser(res,socket.id)
+    io.emit('many',user)
+  });
 
+  //show msg
+  //io.emit('show',msg)
 
-io.on('connection',(socket)=>{
+  //send msg
+  socket.on("msg", (res) => {
+    io.emit("show", res);
+    console.log(res)
+  });
+  socket.on("file", (res) => {
+    io.emit("show", res);
+    console.log(res)
+  });
 
-io.emit('online',true)
-
-//join
-socket.on('join',(res)=>{
-  let data={username:res,text:`${res} jast join`}
- io.emit('show',data)
- // console.log(user)
-})
-
-//show msg
-//io.emit('show',msg)
-
-//send msg
-socket.on('msg',(res)=>{
-io.emit('show',res)
-})
- socket.on('file',(res)=>{
-io.emit('show',res)
- })
- 
- 
- socket.on('disconnect', ()=>{
-   console.log('disconnect')
-   });
-})
-
-
-
-http.listen(process.env.PORT||3030, function() {
-   console.log('listening on *:3030');
+  socket.on("disconnect", () => {
+    console.log("disconnect");
+    removeUser(socket.id)
+    io.emit('many',user)
+  });
 });
